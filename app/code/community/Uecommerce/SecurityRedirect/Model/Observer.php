@@ -39,14 +39,10 @@ class Uecommerce_SecurityRedirect_Model_Observer
             return false;
         }
 
-        if ($this->getHelper()->isIpAllowed()) {
-            return false;
-        }
-
         $this->frontController = Mage::app()->getFrontController();
         $urlHelper = $this->getUrlPathHelper();
 
-        if ($urlHelper->urlPathIsValid('uecommerce_securityredirect')) {
+        if ($urlHelper->urlPathIsValid('uecommerce_securityredirect') && !$this->getHelper()->isIpAllowed()) {
             return $this->setRedirectToHomePage();
         }
     }

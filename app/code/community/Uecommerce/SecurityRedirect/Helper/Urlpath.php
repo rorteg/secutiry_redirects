@@ -31,7 +31,7 @@ class Uecommerce_SecurityRedirect_Helper_Urlpath extends Mage_Core_Helper_Abstra
     {
         $currentUrl = $this->hidrateUrl(Mage::app()->getFrontController()->getRequest()->getRequestUri());
 
-        if(in_array($currentUrl, $this->getUrlPaths($group))) {
+        if (in_array($currentUrl, $this->getUrlPaths($group))) {
             return true;
         }
 
