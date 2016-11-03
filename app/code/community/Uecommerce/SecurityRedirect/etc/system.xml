@@ -37,7 +37,8 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment></comment>
+                            <comment><![CDATA[Do not use this feature if you have a dynamic IP address]]></comment>
+                            <tooltip><![CDATA[Do not use this feature if you have a dynamic IP address]]></tooltip>
                         </allow_ips>
                         <url_paths translate="label">
                             <label>Redirect to URI</label>
