@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<config>
+    <acl>
+        <resources>
+            <all>
+                <title>Allow Everything</title>
+            </all>
+            <admin>
+                <children>
+                    <children>
+                        <system>
+                            <children>
+                                <dev>
+                                    <children>
+                                        <uecommerce_securityredirect>
+                                            <title>Security Redirect</title>
+                                        </uecommerce_securityredirect>
+                                    </children>
+                                </dev>
+                            </children>
+                        </system>
+                    </children>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>
