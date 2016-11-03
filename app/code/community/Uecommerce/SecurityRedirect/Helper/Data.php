@@ -33,12 +33,17 @@ class Uecommerce_SecurityRedirect_Helper_Data extends Mage_Core_Helper_Abstract
         return (string) Mage::getConfig()->getNode()->modules->Uecommerce_SecurityRedirect->version;
     }
 
+    /**
+     * Check if IP is in the whitelist
+     * @param int $storeId
+     * @return bool
+     */
     public function isIpAllowed($storeId=null)
     {
         $allow = true;
-
         $allowedIps = Mage::getStoreConfig(self::XML_PATH_UECOMMERCE_DEV_ALLOW_IPS, $storeId);
         $remoteAddr = Mage::helper('core/http')->getRemoteAddr();
+
         if (!empty($allowedIps) && !empty($remoteAddr)) {
             $allowedIps = preg_split('#\s*,\s*#', $allowedIps, null, PREG_SPLIT_NO_EMPTY);
             if (array_search($remoteAddr, $allowedIps) === false

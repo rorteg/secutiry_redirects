@@ -29,6 +29,7 @@ class Uecommerce_SecurityRedirect_Model_Observer
     private $frontController;
 
     /**
+     * Redirect if needed
      * @param Varien_Event_Observer $observer
      * @return bool|void
      */
@@ -57,7 +58,6 @@ class Uecommerce_SecurityRedirect_Model_Observer
     {
         try {
             $response = $this->frontController->getResponse();
-            $response->clearHeaders();
             $response->setRedirect(Mage::getBaseUrl());
             $response->sendResponse();
             $response->setDispatched(true);
@@ -94,14 +94,11 @@ class Uecommerce_SecurityRedirect_Model_Observer
         $adminCustomPath = Mage::getStoreConfig('admin/url/custom_path');
         $alertMessage = false;
 
-        if (!$isAdminCustomPath) {
-            $alertMessage = true;
-        } elseif ($adminCustomPath == 'admin') {
+        if (!$isAdminCustomPath || $adminCustomPath == 'admin') {
             $alertMessage = true;
         }
 
         if ($alertMessage) {
-
             /** @var Mage_AdminNotification_Model_Inbox $notification */
             $notification = Mage::getModel('adminnotification/inbox');
 
@@ -112,7 +109,6 @@ class Uecommerce_SecurityRedirect_Model_Observer
                 '',
                 Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/admin')
             );
-
         }
     }
 }

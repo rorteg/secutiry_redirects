@@ -23,13 +23,15 @@
 class Uecommerce_SecurityRedirect_Helper_Urlpath extends Mage_Core_Helper_Abstract
 {
     /**
+     * Check if current URL is part of the URLs that need to be redirected
      * @param string $group
      * @return bool
      */
-    public function urlPathIsValid($group){
+    public function urlPathIsValid($group)
+    {
         $currentUrl = $this->hidrateUrl(Mage::app()->getFrontController()->getRequest()->getRequestUri());
 
-        if(in_array($currentUrl, $this->getUrlPaths($group))){
+        if(in_array($currentUrl, $this->getUrlPaths($group))) {
             return true;
         }
 
@@ -37,14 +39,17 @@ class Uecommerce_SecurityRedirect_Helper_Urlpath extends Mage_Core_Helper_Abstra
     }
 
     /**
+     * Get all URLs that need to be redirected if accessed
      * @param string $group
      * @return array
      */
-    public function getUrlPaths($group){
+    public function getUrlPaths($group)
+    {
         $urlPaths = unserialize(Mage::getStoreConfig(
             Uecommerce_SecurityRedirect_Helper_Data::XML_PATH_UECOMMERCE_SECURITY_REDIRECT_CONFIG .
             '/' . $group . '/url_paths')
         );
+
         return $urlPaths['routes'];
     }
 
@@ -52,7 +57,8 @@ class Uecommerce_SecurityRedirect_Helper_Urlpath extends Mage_Core_Helper_Abstra
      * @param string $url
      * @return string
      */
-    public function hidrateUrl($url) {
+    public function hidrateUrl($url)
+    {
         if (strlen($url) > 1) {
             if ($url{0} != '/') {
                 $url = '/' . $url;
@@ -61,6 +67,7 @@ class Uecommerce_SecurityRedirect_Helper_Urlpath extends Mage_Core_Helper_Abstra
                 $url = $url . '/';
             }
         }
+
         return $url;
     }
 }
