@@ -86,15 +86,7 @@ class Uecommerce_SecurityRedirect_Model_Observer
      */
     public function checkAdminPath()
     {
-        $isAdminCustomPath = Mage::getStoreConfig('admin/url/use_custom_path');
-        $adminCustomPath = Mage::getStoreConfig('admin/url/custom_path');
-        $alertMessage = false;
-
-        if (!$isAdminCustomPath || $adminCustomPath == 'admin') {
-            $alertMessage = true;
-        }
-
-        if ($alertMessage) {
+        if ($this->getHelper()->checkAdminPathIsAdmin()) {
             /** @var Mage_AdminNotification_Model_Inbox $notification */
             $notification = Mage::getModel('adminnotification/inbox');
 

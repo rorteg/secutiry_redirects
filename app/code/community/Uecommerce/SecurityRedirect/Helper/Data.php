@@ -56,4 +56,25 @@ class Uecommerce_SecurityRedirect_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $allow;
     }
+
+    /**
+     * Check the admin url path is "admin"
+     * @return bool
+     */
+    public function checkAdminPathIsAdmin()
+    {
+        $isAdminCustomPath = Mage::getStoreConfig('admin/url/use_custom_path');
+        $adminCustomPath = Mage::getStoreConfig('admin/url/custom_path');
+        $return = false;
+
+        if (!$isAdminCustomPath || $adminCustomPath == 'admin') {
+            $return = true;
+        }
+
+        if (Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName')[0] != 'admin') {
+            $return = false;
+        }
+
+        return $return;
+    }
 }
