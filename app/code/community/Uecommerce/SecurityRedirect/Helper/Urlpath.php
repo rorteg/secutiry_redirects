@@ -29,7 +29,7 @@ class Uecommerce_SecurityRedirect_Helper_Urlpath extends Mage_Core_Helper_Abstra
      */
     public function urlPathIsValid($group)
     {
-        $currentUrl = $this->hidrateUrl(Mage::app()->getFrontController()->getRequest()->getRequestUri());
+        $currentUrl = $this->hydrateUrl(Mage::app()->getFrontController()->getRequest()->getRequestUri());
 
         if (in_array($currentUrl, $this->getUrlPaths($group))) {
             return true;
@@ -57,7 +57,7 @@ class Uecommerce_SecurityRedirect_Helper_Urlpath extends Mage_Core_Helper_Abstra
      * @param string $url
      * @return string
      */
-    public function hidrateUrl($url)
+    public function hydrateUrl($url)
     {
         if (strlen($url) > 1) {
             if ($url{0} != '/') {

@@ -38,7 +38,7 @@ class Uecommerce_SecurityRedirect_Model_Adminhtml_System_Config_Backend_Serializ
                 $formated = array();
                 foreach ($value as $val) {
                     if ($val != '/' && $val != '') {
-                        $formated[] = Mage::helper('uecommerce_securityredirect/urlpath')->hidrateUrl($val);
+                        $formated[] = Mage::helper('uecommerce_securityredirect/urlpath')->hydrateUrl($val);
                     } else {
                         $formated[] = '';
                     }
