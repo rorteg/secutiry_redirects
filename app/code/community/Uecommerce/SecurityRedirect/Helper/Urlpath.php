@@ -22,20 +22,41 @@
  */
 class Uecommerce_SecurityRedirect_Helper_Urlpath extends Mage_Core_Helper_Abstract
 {
+    /** @var string  */
+    protected $currentUrl;
+
+    public function __construct()
+    {
+        $this->currentUrl = $this->hydrateUrl(Mage::app()->getFrontController()->getRequest()->getRequestUri());
+    }
+
     /**
      * Check if current URL is part of the URLs that need to be redirected
      * @param string $group
      * @return bool
      */
-    public function urlPathIsValid($group)
+    public function urlPathIsValidByConfigGroup($group)
     {
-        $currentUrl = $this->hydrateUrl(Mage::app()->getFrontController()->getRequest()->getRequestUri());
+        $currentUrlMatch = array_filter($this->getUrlPaths($group), array($this, 'checkIfCurrentUrl'));
+        return (count($currentUrlMatch) > 0);
+    }
 
-        if (in_array($currentUrl, $this->getUrlPaths($group))) {
-            return true;
+    /**
+     * @param $url
+     * @return bool
+     */
+    protected function checkIfCurrentUrl($url)
+    {
+        $result = false;
+        if (!empty($url)) {
+            $regexp = '/' . trim($url, '/') . '/';
+
+            if (@preg_match($regexp, $this->currentUrl)) {
+                $result = true;
+            }
         }
 
-        return false;
+        return $result;
     }
 
     /**
@@ -47,8 +68,8 @@ class Uecommerce_SecurityRedirect_Helper_Urlpath extends Mage_Core_Helper_Abstra
     {
         $urlPaths = unserialize(Mage::getStoreConfig(
             Uecommerce_SecurityRedirect_Helper_Data::XML_PATH_UECOMMERCE_SECURITY_REDIRECT_CONFIG .
-            '/' . $group . '/url_paths')
-        );
+            '/' . $group . '/url_paths'
+        ));
 
         return $urlPaths['routes'];
     }

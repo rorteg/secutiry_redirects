@@ -21,16 +21,19 @@
  * @author     Uecommerce Dev Team
  */
 
-class Uecommerce_SecurityRedirect_Model_Adminhtml_System_Config_Backend_Serialized extends Mage_Core_Model_Config_Data {
+class Uecommerce_SecurityRedirect_Model_Adminhtml_System_Config_Backend_Serialized extends Mage_Core_Model_Config_Data
+{
 
-    protected function _afterLoad() {
+    protected function _afterLoad()
+    {
         if (!is_array($this->getValue())) {
             $value = $this->getValue();
             $this->setValue(empty($value) ? false : @unserialize($value));
         }
     }
 
-    protected function _beforeSave() {
+    protected function _beforeSave()
+    {
         $values = $this->getValue();
         if (is_array($values)) {
             $newValue = array();

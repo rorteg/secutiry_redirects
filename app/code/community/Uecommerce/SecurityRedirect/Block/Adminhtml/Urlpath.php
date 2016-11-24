@@ -50,7 +50,7 @@ class Uecommerce_SecurityRedirect_Block_Adminhtml_Urlpath extends Mage_Adminhtml
         }
 
         $html .= '</ul>';
-        $html .= $this->_getAddRowButtonHtml($this->getElement()->getId() . '_container', $this->getElement()->getId() . '_template', $this->__('Add New URI'));
+        $html .= $this->_getAddRowButtonHtml($this->getElement()->getId() . '_container', $this->getElement()->getId() . '_template', $this->__('Add New Expression'));
 
         return $html;
     }
@@ -70,7 +70,7 @@ class Uecommerce_SecurityRedirect_Block_Adminhtml_Urlpath extends Mage_Adminhtml
             . $this->getElement()->getName() . '[routes][]" value="'
             . $this->_getValue('routes/' . $rowIndex) . '" ' . $this->_getDisabled() . '/> ';
         $html .= $this->_getRemoveRowButtonHtml();
-        $html .= '<p class="note"><span>'.$this->__('Example: rss/order/new').'</span></p>';
+        //$html .= '<p class="note"><span>'.$this->__('Example: rss/order/new').'</span></p>';
         $html .= '</div>';
         $html .= '</li>';
 

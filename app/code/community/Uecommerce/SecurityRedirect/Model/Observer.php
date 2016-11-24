@@ -42,7 +42,8 @@ class Uecommerce_SecurityRedirect_Model_Observer
         $this->frontController = Mage::app()->getFrontController();
         $urlHelper = $this->getUrlPathHelper();
 
-        if ($urlHelper->urlPathIsValid('uecommerce_securityredirect') && !$this->getHelper()->isIpAllowed()) {
+        if ($urlHelper->urlPathIsValidByConfigGroup('uecommerce_securityredirect')
+            && !$this->getHelper()->isIpAllowed()) {
             return $this->setRedirectToHomePage();
         }
     }
@@ -92,10 +93,37 @@ class Uecommerce_SecurityRedirect_Model_Observer
 
             $notification->addCritical(
                 Mage::helper('uecommerce_securityredirect')->__(
-                    "Attention! In order to avoid Brute Force Attacks it is strictly recommended that you change your URL to access the administrative area (from 'admin' to another word). Click in 'Read Details' to go to the settings and Click in 'Admin Base URL'. "
+                    "Attention! In order to avoid Brute Force Attacks it is strictly recommended that you change your 
+                    URL to access the administrative area (from 'admin' to another word). Click in 'Read Details' 
+                    to go to the settings and Click in 'Admin Base URL'. "
                 ),
                 '',
                 Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/admin')
+            );
+        }
+    }
+
+    /**
+     * Check for vulnerable files according to the article:
+     * https://support.hypernode.com/knowledgebase/magento-patch-supee-8788-release-1-9-3/
+     */
+    public function checkVulnerableFiles()
+    {
+        if ($this->getHelper()->checkVulnerableFilesExists()) {
+            /** @var Mage_AdminNotification_Model_Inbox $notification */
+            $notification = Mage::getModel('adminnotification/inbox');
+
+            $notification->addCritical(
+                Mage::helper('uecommerce_securityredirect')->__(
+                    "Attention! Your installation has vulnerable files! 
+                    Please install PATCH SUPEE-8788 immediately
+                     for your Magento to fix this critical security issue!"
+                ),
+                Mage::helper('uecommerce_securityredirect')->__(
+                    "Please install PATCH SUPEE-8788 immediately for your Magento 
+                    to fix this critical security issue!"
+                ),
+                'https://magento.com/tech-resources/download'
             );
         }
     }

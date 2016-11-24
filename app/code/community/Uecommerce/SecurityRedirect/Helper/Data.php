@@ -19,11 +19,21 @@
  * @copyright  Copyright (c) 2016 Uecommerce (http://www.uecommerce.com.br/)
  * @license    http://www.uecommerce.com.br/
  * @author     Uecommerce Dev Team
- */ 
+ */
 class Uecommerce_SecurityRedirect_Helper_Data extends Mage_Core_Helper_Abstract
 {
     const XML_PATH_UECOMMERCE_SECURITY_REDIRECT_CONFIG = 'dev';
-    const XML_PATH_UECOMMERCE_DEV_ALLOW_IPS = 'dev/uecommerce_securityredirect/allow_ips';
+
+    protected $_filesToRemove = [
+        '/skin/adminhtml/default/default/media/flex.swf',
+        '/skin/adminhtml/default/default/media/uploader.swf',
+        '/skin/adminhtml/default/default/media/uploaderSingle.swf'
+    ];
+
+    protected $_filesSearchContents = [
+        '/js/mage/adminhtml/uploader/instance.js' => 'fustyFlowFactory',
+        '/skin/adminhtml/default/default/boxes.css' => 'background:url(images/blank.gif) repeat;'
+    ];
 
     /**
      * Get extension version
@@ -34,23 +44,16 @@ class Uecommerce_SecurityRedirect_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * Check if IP is in the whitelist
+     * Make sure that IP is in the white list of Magento and return false when the white list is empty.
      * @param int $storeId
      * @return bool
      */
-    public function isIpAllowed($storeId=null)
+    public function isIpAllowed($storeId = null)
     {
         $allow = true;
-        $allowedIps = Mage::getStoreConfig(self::XML_PATH_UECOMMERCE_DEV_ALLOW_IPS, $storeId);
-        $remoteAddr = Mage::helper('core/http')->getRemoteAddr();
+        $allowedIps = Mage::getStoreConfig(Mage_Core_Helper_Data::XML_PATH_DEV_ALLOW_IPS, $storeId);
 
-        if (!empty($allowedIps) && !empty($remoteAddr)) {
-            $allowedIps = preg_split('#\s*,\s*#', $allowedIps, null, PREG_SPLIT_NO_EMPTY);
-            if (array_search($remoteAddr, $allowedIps) === false
-                && array_search(Mage::helper('core/http')->getHttpHost(), $allowedIps) === false) {
-                $allow = false;
-            }
-        } else {
+        if (!Mage::helper('core')->isDevAllowed() || empty($allowedIps)) {
             $allow = false;
         }
 
@@ -76,5 +79,28 @@ class Uecommerce_SecurityRedirect_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return $return;
+    }
+
+    /**
+     * Check for vulnerable files according to the article:
+     * https://support.hypernode.com/knowledgebase/magento-patch-supee-8788-release-1-9-3/
+     * @return bool
+     */
+    public function checkVulnerableFilesExists()
+    {
+        // Check if vulnerable files on the list ($this->_filesToRemove) exist.
+        $filesToRemove = array_filter($this->_filesToRemove, function ($file) {
+            return file_exists(BP.$file);
+        });
+
+        // Check if the files in the list ($this->_filesSearchContents) contain the array values.
+        $filesContents = array();
+        foreach ($this->_filesSearchContents as $file => $content) {
+            if (strpos(file_get_contents(BP . $file), $content) === false) {
+                $filesContents[] = $file;
+            }
+        }
+
+        return (count($filesToRemove) > 0) || (count($filesContents) > 0);
     }
 }
