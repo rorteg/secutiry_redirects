@@ -66,7 +66,7 @@ class Uecommerce_SecurityRedirect_Helper_Urlpath extends Mage_Core_Helper_Abstra
      */
     public function getUrlPaths($group)
     {
-        $urlPaths = unserialize(Mage::getStoreConfig(
+        $urlPaths = @unserialize(Mage::getStoreConfig(
             Uecommerce_SecurityRedirect_Helper_Data::XML_PATH_UECOMMERCE_SECURITY_REDIRECT_CONFIG .
             '/' . $group . '/url_paths'
         ));

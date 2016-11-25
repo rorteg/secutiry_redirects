@@ -70,12 +70,12 @@ class Uecommerce_SecurityRedirect_Helper_Data extends Mage_Core_Helper_Abstract
         $adminCustomPath = Mage::getStoreConfig('admin/url/custom_path');
         $return = false;
 
-        if (!$isAdminCustomPath || $adminCustomPath == 'admin') {
+        if ((string) Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName')[0] == 'admin') {
             $return = true;
         }
 
-        if (Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName')[0] != 'admin') {
-            $return = false;
+        if ($isAdminCustomPath && $adminCustomPath == 'admin') {
+            $return = true;
         }
 
         return $return;
@@ -84,18 +84,31 @@ class Uecommerce_SecurityRedirect_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Check for vulnerable files according to the article:
      * https://support.hypernode.com/knowledgebase/magento-patch-supee-8788-release-1-9-3/
+     * @param array|null $vulnerableFilesToRemove
+     * @param array|null $vulnerableFilesContents
      * @return bool
      */
-    public function checkVulnerableFilesExists()
+    public function checkVulnerableFilesExists($vulnerableFilesToRemove = null, $vulnerableFilesContents = null)
     {
+        $vFilesContents = $this->_filesSearchContents;
+        $vFilesToRemove = $this->_filesToRemove;
+
+        if ($vulnerableFilesContents !== null && is_array($vulnerableFilesContents)) {
+            $vFilesContents = $vulnerableFilesContents;
+        }
+
+        if ($vulnerableFilesToRemove !== null && is_array($vulnerableFilesToRemove)) {
+            $vFilesToRemove = $vulnerableFilesToRemove;
+        }
+
         // Check if vulnerable files on the list ($this->_filesToRemove) exist.
-        $filesToRemove = array_filter($this->_filesToRemove, function ($file) {
+        $filesToRemove = array_filter($vFilesToRemove, function ($file) {
             return file_exists(BP.$file);
         });
 
         // Check if the files in the list ($this->_filesSearchContents) contain the array values.
         $filesContents = array();
-        foreach ($this->_filesSearchContents as $file => $content) {
+        foreach ($vFilesContents as $file => $content) {
             if (strpos(file_get_contents(BP . $file), $content) === false) {
                 $filesContents[] = $file;
             }
