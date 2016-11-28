@@ -31,7 +31,7 @@ class Uecommerce_SecurityRedirect_Model_Observer
     /**
      * Redirect if needed
      * @param Varien_Event_Observer $observer
-     * @return bool|void
+     * @return bool
      */
     public function checkAndRedirect(Varien_Event_Observer $observer)
     {
@@ -46,10 +46,13 @@ class Uecommerce_SecurityRedirect_Model_Observer
             && !$this->getHelper()->isIpAllowed()) {
             return $this->setRedirectToHomePage();
         }
+
+        return false;
     }
 
     /**
      * Redirect to Home Page
+     * @return bool
      */
     private function setRedirectToHomePage()
     {
@@ -59,10 +62,10 @@ class Uecommerce_SecurityRedirect_Model_Observer
             $response->sendResponse();
             $response->setDispatched(true);
 
-            return;
+            return true;
         } catch (Exception $e) {
             Mage::logException($e);
-            return;
+            return false;
         }
     }
 

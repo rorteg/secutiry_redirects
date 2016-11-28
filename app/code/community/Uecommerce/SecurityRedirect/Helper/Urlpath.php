@@ -31,6 +31,16 @@ class Uecommerce_SecurityRedirect_Helper_Urlpath extends Mage_Core_Helper_Abstra
     }
 
     /**
+     * @param $currentUrl
+     * @return $this
+     */
+    public function setCurrentUrl($currentUrl)
+    {
+        $this->currentUrl = $this->hydrateUrl($currentUrl);
+        return $this;
+    }
+
+    /**
      * Check if current URL is part of the URLs that need to be redirected
      * @param string $group
      * @return bool
